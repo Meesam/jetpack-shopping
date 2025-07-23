@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "162826102542",
+    "project_id": "composeshoppoing",
+    "storage_bucket": "composeshoppoing.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162826102542:android:25c68ee24fe50e2f54995f",
+        "android_client_info": {
+          "package_name": "com.meesam.jetpackshopping"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHEjzAmmm36s2k0Brp1wi5P_CfX53MJfs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
