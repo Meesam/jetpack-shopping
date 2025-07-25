@@ -6,4 +6,7 @@ sealed class UserRegistrationEvents {
   data class onPasswordChange(val password: String) : UserRegistrationEvents()
   data class onConfirmPasswordChange(val confirmPassword: String) : UserRegistrationEvents()
   data object onRegisterClick : UserRegistrationEvents()
+
+  data object reset: UserRegistrationEvents()
+
 }

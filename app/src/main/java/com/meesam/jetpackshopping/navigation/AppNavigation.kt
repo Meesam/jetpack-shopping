@@ -8,6 +8,8 @@ object AppDestinations {
     const val LOGIN_ROUTE = "login"
     const val REGISTER_ROUTE = "register"
     const val HOME_ROUTE = "home"
+
+    const val FEED_ROUTE = "feed"
     const val PROFILE_ROUTE = "profile"
     const val PRODUCT_ROUTE="product_list"
     const val EDIT_USER_ID_KEY = "id"

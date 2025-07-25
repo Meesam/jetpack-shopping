@@ -20,6 +20,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.meesam.jetpackshopping.navigation.AppDestinations
 import com.meesam.jetpackshopping.view.common.BottomNavigationBar
+import com.meesam.jetpackshopping.view.feed.FeedScreen
 import com.meesam.jetpackshopping.view.products.ProductScreen
 import com.meesam.jetpackshopping.view.profile.ProfileScreen
 import com.meesam.jetpackshopping.view.search.SearchScreen
@@ -27,7 +28,7 @@ import com.meesam.jetpackshopping.view.search.SearchScreen
 @Composable
 fun HomeScreen(mainNavController: NavHostController) {
     // For simpler bottom nav without nested NavHost:
-    var currentBottomTabRoute by rememberSaveable { mutableStateOf(AppDestinations.PRODUCT_ROUTE) }
+    var currentBottomTabRoute by rememberSaveable { mutableStateOf(AppDestinations.FEED_ROUTE) }
     // Or, if using a nested NavHost for bottom tabs, create a bottomNavController here:
     // val bottomNavController = rememberNavController()
 
@@ -70,6 +71,7 @@ fun HomeScreen(mainNavController: NavHostController) {
                 }
                 AppDestinations.HOME_SEARCH_ROUTE -> SearchScreen()
                 AppDestinations.PROFILE_ROUTE -> ProfileScreen()
+                AppDestinations.FEED_ROUTE -> FeedScreen()
             }
             // Or, if using a nested NavHost:
             // NestedNavHostForBottomTabs(bottomNavController, mainNavController, paddingValues)

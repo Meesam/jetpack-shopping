@@ -1,5 +1,6 @@
 package com.meesam.jetpackshopping.viewmodel
 
+import android.util.Patterns
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -28,34 +29,82 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
     var password: String by mutableStateOf("")
         private set
 
+    var emailError by mutableStateOf<String?>(null)
+        private set
+
+    var passwordError by mutableStateOf<String?>(null)
+        private set
+
     fun onEvent(event: UserLoginEvents) {
         when (event) {
             is UserLoginEvents.onEmailChange -> {
                 email = event.email
+                isEmailValid(showError = true)
             }
 
             is UserLoginEvents.onPasswordChange -> {
                 password = event.password
+                isPasswordValid(showError = true)
             }
 
             is UserLoginEvents.onLoginClick -> {
                 signInUser()
             }
+
+            is UserLoginEvents.reset -> {
+                reset()
+            }
         }
     }
 
-    fun signInUser() {
+   private fun isEmailValid(showError: Boolean = false): Boolean{
+        if(email.isBlank()){
+            if (showError) emailError = "Email cannot be empty"
+            return false
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            if (showError) emailError = "Invalid email address"
+            return false
+        }
+        emailError = null
+        return true
+    }
+
+    private fun isPasswordValid(showError: Boolean = false): Boolean{
+        if(password.isBlank()){
+            if (showError) passwordError = "Email cannot be empty"
+            return false
+        }
+        passwordError = null
+        return true
+    }
+
+    private fun isFormValid(): Boolean{
+       val emailValid = isEmailValid(showError = true)
+       val passwordValid = isPasswordValid(showError = true)
+        return emailValid && passwordValid
+    }
+
+    private fun signInUser() {
+        if(!isFormValid()){
+            return
+        }
         viewModelScope.launch {
             _loginUiState.value = AppState.Loading
             val result = authRepository.signInWithEmailAndPassword(email, password)
             if(result == null || result.user == null){
                 _loginUiState.value = AppState.Error("Something went wrong")
-                _loginUiState.value = AppState.Idle
             }else{
                 _loginUiState.value = AppState.Success(result)
-                _loginUiState.value = AppState.Idle
             }
         }
+    }
+
+   private fun reset(){
+        email = ""
+        password = ""
+       emailError = null
+       passwordError = null
     }
 
 }
