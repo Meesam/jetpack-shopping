@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
@@ -24,6 +25,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,13 +39,17 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.meesam.jetpackshopping.R
-
-
+import com.meesam.jetpackshopping.events.UserLoginEvents
+import com.meesam.jetpackshopping.viewmodel.LoginViewModel
 
 
 @Composable
-fun UserLoginScreen() {
+fun UserLoginScreen(onLoginSuccess:()-> Unit, onNavigateToRegister:()-> Unit) {
+    val loginViewModel : LoginViewModel = hiltViewModel()
+    val loginUiState by loginViewModel.loginUiState.collectAsState()
+
    Column(
        modifier = Modifier.fillMaxSize()
            .background(Color.White)
@@ -55,21 +62,25 @@ fun UserLoginScreen() {
        Spacer(modifier = Modifier.height(20.dp))
        Column {
            OutlinedTextField(
-               value = "",
-               onValueChange = {},
+               value = loginViewModel.email,
+               onValueChange = {
+                   loginViewModel.onEvent(UserLoginEvents.onEmailChange(it))
+               },
                placeholder = {
-                   Text("Username")
+                   Text("Email")
                },
                shape = RoundedCornerShape(16.dp),
                leadingIcon = {
-                   Icon(Icons.Default.Person, contentDescription = "User")
+                   Icon(Icons.Default.Email, contentDescription = "User")
                },
                modifier = Modifier.fillMaxWidth()
            )
            Spacer(modifier = Modifier.height(20.dp))
            OutlinedTextField(
-               value = "",
-               onValueChange = {},
+               value = loginViewModel.password,
+               onValueChange = {
+                   loginViewModel.onEvent(UserLoginEvents.onPasswordChange(it))
+               },
                placeholder = {
                    Text("Password")
                },
@@ -81,9 +92,11 @@ fun UserLoginScreen() {
                modifier = Modifier.fillMaxWidth()
            )
            Spacer(modifier = Modifier.height(20.dp))
-           Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+           Row(modifier = Modifier.fillMaxWidth()) {
                Button(
-                   onClick = { /*TODO*/ },
+                   onClick = {
+                       loginViewModel.onEvent(UserLoginEvents.onLoginClick)
+                   },
                    shape = RoundedCornerShape(16.dp),
                    modifier = Modifier.fillMaxWidth()
                ) {
@@ -92,11 +105,14 @@ fun UserLoginScreen() {
            }
 
            Spacer(modifier = Modifier.height(20.dp))
-           Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-
-               Text(text = "New User?", style = TextStyle(fontSize = 20.sp))
-
-               Text(text = "Forgot Password?", style = TextStyle(fontSize = 20.sp))
+           Row(modifier = Modifier.fillMaxWidth()) {
+               Button(
+                   onClick = onNavigateToRegister,
+                   shape = RoundedCornerShape(16.dp),
+                   modifier = Modifier.fillMaxWidth()
+               ) {
+                   Text(text = "Register", style = TextStyle(fontSize = 20.sp))
+               }
            }
 
        }
@@ -108,5 +124,5 @@ fun UserLoginScreen() {
 @Preview(showBackground = true)
 @Composable
 fun UserLoginScreenPrev() {
-    UserLoginScreen()
+   // UserLoginScreen()
 }

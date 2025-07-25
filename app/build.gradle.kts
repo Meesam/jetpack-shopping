@@ -53,6 +53,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+   // implementation(libs.google.firebase.firestore.ktx)
+   // implementation(libs.firebase.auth.ktx)
+    //implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -79,7 +82,13 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     /*Firebase*/
+    implementation(platform("com.google.firebase:firebase-bom:34.0.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
 
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
+    /*implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx")*/
+
 }
