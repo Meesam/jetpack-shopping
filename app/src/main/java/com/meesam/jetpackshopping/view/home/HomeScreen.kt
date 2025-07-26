@@ -19,6 +19,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.meesam.jetpackshopping.navigation.AppDestinations
+import com.meesam.jetpackshopping.view.common.AppTopBar
 import com.meesam.jetpackshopping.view.common.BottomNavigationBar
 import com.meesam.jetpackshopping.view.feed.FeedScreen
 import com.meesam.jetpackshopping.view.products.ProductScreen
@@ -26,35 +27,19 @@ import com.meesam.jetpackshopping.view.profile.ProfileScreen
 import com.meesam.jetpackshopping.view.search.SearchScreen
 
 @Composable
-fun HomeScreen(mainNavController: NavHostController) {
+fun HomeScreen(mainNavController: NavHostController, onSignOut:()-> Unit) {
     // For simpler bottom nav without nested NavHost:
     var currentBottomTabRoute by rememberSaveable { mutableStateOf(AppDestinations.FEED_ROUTE) }
     // Or, if using a nested NavHost for bottom tabs, create a bottomNavController here:
     // val bottomNavController = rememberNavController()
 
     Scaffold(
-        /*floatingActionButton = {
-            val navBackStackEntry by mainNavController.currentBackStackEntryAsState()
-            val currentRoute = navBackStackEntry?.destination?.route
-            if (currentRoute == AppDestinations.HOME_ROUTE &&
-                currentBottomTabRoute != AppDestinations.HOME_SEARCH_ROUTE &&
-                currentBottomTabRoute != AppDestinations.PROFILE_ROUTE
-            ) {
-                FloatingActionButton(
-                    onClick = {
-                        mainNavController.navigate(AppDestinations.ADD_USER_ROUTE)
-                    },
-                    containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    contentColor = MaterialTheme.colorScheme.primaryContainer
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = "Add")
-                }
-            }
-
-        },*/
+        topBar = {
+            AppTopBar()
+        },
         bottomBar = {
             BottomNavigationBar(
-                currentRoute = currentBottomTabRoute, // or bottomNavController.currentBackStackEntryAsState().value?.destination?.route
+                currentRoute = currentBottomTabRoute,
                 onTabSelected = { route ->
                     currentBottomTabRoute = route
                     // If using bottomNavController:
@@ -70,11 +55,9 @@ fun HomeScreen(mainNavController: NavHostController) {
                     mainNavController.navigate(AppDestinations.editUserRoute(it))
                 }
                 AppDestinations.HOME_SEARCH_ROUTE -> SearchScreen()
-                AppDestinations.PROFILE_ROUTE -> ProfileScreen()
+                AppDestinations.PROFILE_ROUTE -> ProfileScreen(onSignOut)
                 AppDestinations.FEED_ROUTE -> FeedScreen()
             }
-            // Or, if using a nested NavHost:
-            // NestedNavHostForBottomTabs(bottomNavController, mainNavController, paddingValues)
         }
     }
 }

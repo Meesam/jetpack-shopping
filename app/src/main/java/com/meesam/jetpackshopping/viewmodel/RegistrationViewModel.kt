@@ -48,21 +48,28 @@ class RegistrationViewModel @Inject constructor(private val authRepository: Auth
         when (events) {
             is UserRegistrationEvents.onConfirmPasswordChange -> {
                 confirmPassword = events.confirmPassword
+                comparePassword(showError = true)
             }
 
             is UserRegistrationEvents.onEmailChange -> {
                 email = events.email
+                isEmailValid(showError = true)
             }
 
             is UserRegistrationEvents.onNameChange -> {
                 name = events.name
+                isNameValid(showError = true)
             }
 
             is UserRegistrationEvents.onPasswordChange -> {
                 password = events.password
+                isPasswordValid(showError = true)
             }
 
             UserRegistrationEvents.onRegisterClick -> {
+                if(!isFormValid()){
+                    return
+                }
                 userRegistration()
             }
 
@@ -90,15 +97,6 @@ class RegistrationViewModel @Inject constructor(private val authRepository: Auth
         return true
     }
 
-    private fun isConfirmPasswordValid(showError: Boolean = false): Boolean{
-        if(confirmPassword.isBlank()){
-            if(showError) confirmPasswordError = "Password cannot be blank"
-            return false
-        }
-        confirmPasswordError = null
-        return true
-    }
-
     private fun isEmailValid(showError: Boolean = false): Boolean{
         if(email.isBlank()){
             if (showError) emailError = "Email cannot be empty"
@@ -114,11 +112,19 @@ class RegistrationViewModel @Inject constructor(private val authRepository: Auth
 
     private fun comparePassword(showError: Boolean = false): Boolean{
         if(password != confirmPassword){
-            if (showError) confirmPasswordError = "Compare Password is not same as Password"
+            if (showError) confirmPasswordError = "Password did not match"
             return false
         }
         confirmPasswordError = null
         return true
+    }
+
+    private fun isFormValid(): Boolean{
+        val nameValid = isNameValid(showError = true)
+        val emailValid = isEmailValid(showError = true)
+        val passwordValid = isPasswordValid(showError = true)
+        val comparePassword = comparePassword(showError = true)
+        return nameValid && emailValid && passwordValid  && comparePassword
     }
 
     private fun userRegistration() {
@@ -145,6 +151,7 @@ class RegistrationViewModel @Inject constructor(private val authRepository: Auth
         email = ""
         password = ""
         confirmPassword = ""
+        _registerUiState.value = AppState.Idle
     }
 
 

@@ -63,7 +63,7 @@ fun UserLoginScreen(onLoginSuccess:()-> Unit, onNavigateToRegister:()-> Unit) {
     LaunchedEffect(loginUiState) {
         when(loginUiState){
             is AppState.Error -> {
-                Toast.makeText(context, "Something went wrong", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, (loginUiState as AppState.Error).errorMessage , Toast.LENGTH_LONG).show()
                 loginViewModel.onEvent(UserLoginEvents.reset)
 
             }
@@ -118,6 +118,9 @@ fun UserLoginScreen(onLoginSuccess:()-> Unit, onNavigateToRegister:()-> Unit) {
                     modifier = Modifier.fillMaxWidth()
                         .focusRequester(emailFocusRequester)
                 )
+                if(loginViewModel.emailError != null){
+                    Text(loginViewModel.emailError.toString(), color = Color.Red ,style = TextStyle(fontSize = 12.sp))
+                }
                 Spacer(modifier = Modifier.height(20.dp))
                 OutlinedTextField(
                     value = loginViewModel.password,
@@ -135,6 +138,9 @@ fun UserLoginScreen(onLoginSuccess:()-> Unit, onNavigateToRegister:()-> Unit) {
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth()
                 )
+                if(loginViewModel.passwordError != null){
+                    Text(loginViewModel.passwordError.toString(), color = Color.Red ,style = TextStyle(fontSize = 12.sp))
+                }
                 Spacer(modifier = Modifier.height(20.dp))
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Button(

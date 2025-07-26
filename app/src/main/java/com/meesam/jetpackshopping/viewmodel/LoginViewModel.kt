@@ -21,8 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(private val authRepository: AuthRepository) : ViewModel() {
 
-    private val _loginUiState = MutableStateFlow<AppState<AuthResult>>(AppState.Idle)
-    val loginUiState: StateFlow<AppState<AuthResult>> = _loginUiState.asStateFlow()
+    private val _loginUiState = MutableStateFlow<AppState<String>>(AppState.Idle)
+    val loginUiState: StateFlow<AppState<String>> = _loginUiState.asStateFlow()
 
     var email: String by mutableStateOf("")
         private set
@@ -72,7 +72,7 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
 
     private fun isPasswordValid(showError: Boolean = false): Boolean{
         if(password.isBlank()){
-            if (showError) passwordError = "Email cannot be empty"
+            if (showError) passwordError = "Password cannot be empty"
             return false
         }
         passwordError = null
@@ -92,10 +92,10 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
         viewModelScope.launch {
             _loginUiState.value = AppState.Loading
             val result = authRepository.signInWithEmailAndPassword(email, password)
-            if(result == null || result.user == null){
-                _loginUiState.value = AppState.Error("Something went wrong")
+            if(result.isFailure){
+                _loginUiState.value = AppState.Error(result.toString())
             }else{
-                _loginUiState.value = AppState.Success(result)
+                _loginUiState.value = AppState.Success(result.toString())
             }
         }
     }
@@ -105,6 +105,7 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
         password = ""
        emailError = null
        passwordError = null
+       _loginUiState.value = AppState.Idle
     }
 
 }
