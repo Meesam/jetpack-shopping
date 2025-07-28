@@ -2,6 +2,7 @@ package com.meesam.jetpackshopping.view.common
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -14,13 +15,26 @@ import com.meesam.jetpackshopping.navigation.AppDestinations
 import com.meesam.jetpackshopping.navigation.BottomNavigationItem
 
 @Composable
-fun BottomNavigationBar(currentRoute: String?, onTabSelected: (String) -> Unit) {
-    val items = listOf(
-        BottomNavigationItem("Home", Icons.Filled.Home, AppDestinations.FEED_ROUTE),
-        BottomNavigationItem("Explore", Icons.Filled.ShoppingCart, AppDestinations.PRODUCT_ROUTE),
-        BottomNavigationItem("Search", Icons.Filled.Search, AppDestinations.HOME_SEARCH_ROUTE),
-        BottomNavigationItem("Profile", Icons.Filled.Person, AppDestinations.PROFILE_ROUTE)
-    )
+fun BottomNavigationBar(
+    currentRoute: String?,
+    isAdminLoggedIn: Boolean,
+    onTabSelected: (String) -> Unit,
+) {
+    val items = if(!isAdminLoggedIn){
+        listOf(
+            BottomNavigationItem("Home", Icons.Filled.Home, AppDestinations.FEED_ROUTE),
+            BottomNavigationItem("Explore", Icons.Filled.ShoppingCart, AppDestinations.PRODUCT_ROUTE),
+            BottomNavigationItem("Search", Icons.Filled.Search, AppDestinations.HOME_SEARCH_ROUTE),
+            BottomNavigationItem("Profile", Icons.Filled.Person, AppDestinations.PROFILE_ROUTE)
+        )
+    }else {
+        listOf(
+            BottomNavigationItem("Home", Icons.Filled.Home, AppDestinations.ADMIN_DASHBOARD),
+            BottomNavigationItem("Product", Icons.Filled.ShoppingCart, AppDestinations.ADMIN_PRODUCT),
+            BottomNavigationItem("Category", Icons.Filled.Menu, AppDestinations.ADMIN_CATEGORY),
+            BottomNavigationItem("Profile", Icons.Filled.Person, AppDestinations.PROFILE_ROUTE)
+        )
+    }
     NavigationBar {
         items.forEach { item ->
             NavigationBarItem(

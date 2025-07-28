@@ -1,6 +1,7 @@
 package com.meesam.jetpackshopping.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -23,6 +24,7 @@ import com.meesam.jetpackshopping.states.AppState
 import com.meesam.jetpackshopping.ui.theme.JetpackShoppingTheme
 import com.meesam.jetpackshopping.view.auth.UserLoginScreen
 import com.meesam.jetpackshopping.view.auth.UserRegistrationScreen
+import com.meesam.jetpackshopping.view.home.AdminHomeScreen
 import com.meesam.jetpackshopping.view.home.HomeScreen
 import com.meesam.jetpackshopping.view.products.ProductScreen
 import com.meesam.jetpackshopping.viewmodel.ProfileViewModel
@@ -48,6 +50,7 @@ fun AppNavigation() {
     val profileViewModel: ProfileViewModel = hiltViewModel()
     val isLoadingInitialUser by profileViewModel.isLoadingInitialUser.collectAsState()
     val isUserLoggedIn by profileViewModel.isUserLoggedIn.collectAsState()
+
 
     if(isLoadingInitialUser){
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -80,10 +83,21 @@ fun AppNavigation() {
 
             composable(AppDestinations.HOME_ROUTE) {
                 // Home screen will manage its own content based on bottom nav selection
-                HomeScreen(mainNavController = mainNavController, onSignOut = {
+                HomeScreen(mainNavController = mainNavController, isAdminLoggedIn = false ,onSignOut = {
                     profileViewModel.onEvent(UserProfileEvent.onSignOut)
                     mainNavController.navigate(AppDestinations.LOGIN_ROUTE) {
                         popUpTo(AppDestinations.HOME_ROUTE) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }) // Pass mainNavController if Profile needs to navigate outside Home
+            }
+
+            composable(AppDestinations.ADMIN_HOME) {
+                // Home screen will manage its own content based on bottom nav selection
+                AdminHomeScreen(mainNavController = mainNavController, isAdminLoggedIn = true, onSignOut = {
+                    profileViewModel.onEvent(UserProfileEvent.onSignOut)
+                    mainNavController.navigate(AppDestinations.LOGIN_ROUTE) {
+                        popUpTo(AppDestinations.ADMIN_HOME) { inclusive = true }
                         launchSingleTop = true
                     }
                 }) // Pass mainNavController if Profile needs to navigate outside Home

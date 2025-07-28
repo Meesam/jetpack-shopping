@@ -9,6 +9,11 @@ object AppDestinations {
     const val REGISTER_ROUTE = "register"
     const val HOME_ROUTE = "home"
 
+    const val ADMIN_HOME = "admin_home"
+    const val ADMIN_CATEGORY = "admin_category"
+    const val ADMIN_PRODUCT = "admin_product"
+    const val ADMIN_DASHBOARD ="admin_dashboard"
+
     const val FEED_ROUTE = "feed"
     const val PROFILE_ROUTE = "profile"
     const val PRODUCT_ROUTE="product_list"

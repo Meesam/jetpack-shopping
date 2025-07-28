@@ -1,6 +1,7 @@
 package com.meesam.jetpackshopping.view.auth
 
 import android.content.res.Resources
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 
@@ -51,6 +52,7 @@ import com.meesam.jetpackshopping.R
 import com.meesam.jetpackshopping.events.UserLoginEvents
 import com.meesam.jetpackshopping.states.AppState
 import com.meesam.jetpackshopping.viewmodel.LoginViewModel
+import com.meesam.jetpackshopping.viewmodel.ProfileViewModel
 
 
 @Composable
