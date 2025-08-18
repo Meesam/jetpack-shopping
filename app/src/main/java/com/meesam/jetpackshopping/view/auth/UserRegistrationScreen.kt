@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
@@ -94,7 +95,7 @@ fun UserRegistrationScreen(onBackToLogin:()-> Unit) {
     }else{
         Column(
             modifier = Modifier.fillMaxSize()
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(vertical = 50.dp, horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ){

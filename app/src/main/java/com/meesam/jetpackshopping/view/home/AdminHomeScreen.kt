@@ -39,7 +39,7 @@ fun AdminHomeScreen(mainNavController: NavController, isAdminLoggedIn: Boolean, 
         Box(modifier = Modifier.padding(paddingValues)) {
             when (currentBottomTabRoute) {
                 AppDestinations.ADMIN_PRODUCT -> ProductScreen() {
-                    mainNavController.navigate(AppDestinations.editUserRoute(it))
+                    mainNavController.navigate(AppDestinations.productDetailRoute(it))
                 }
                 AppDestinations.ADMIN_CATEGORY -> AdminCategoryScreen()
                 AppDestinations.PROFILE_ROUTE -> ProfileScreen( onSignOut=onSignOut)

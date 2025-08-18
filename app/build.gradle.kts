@@ -87,8 +87,9 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
 
-    /*implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.firebase:firebase-ktx")
-    implementation("com.google.firebase:firebase-auth-ktx")*/
+    /*Extended Material icons*/
+    implementation(libs.androidx.material) 
+    implementation(libs.androidx.material.icons.core)
+    implementation(libs.androidx.material.icons.extended)
 
 }

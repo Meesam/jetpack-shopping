@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.meesam.jetpackshopping.navigation.AppDestinations
 import com.meesam.jetpackshopping.view.common.AppTopBar
@@ -27,7 +28,10 @@ fun HomeScreen(mainNavController: NavHostController, isAdminLoggedIn: Boolean, o
 
     Scaffold(
         topBar = {
-            AppTopBar()
+            Box(modifier = Modifier.padding(16.dp)){
+                AppTopBar()
+            }
+
         },
         bottomBar = {
             BottomNavigationBar(
@@ -45,7 +49,7 @@ fun HomeScreen(mainNavController: NavHostController, isAdminLoggedIn: Boolean, o
         Box(modifier = Modifier.padding(paddingValues)) {
             when (currentBottomTabRoute) {
                 AppDestinations.PRODUCT_ROUTE -> ProductScreen() {
-                    mainNavController.navigate(AppDestinations.editUserRoute(it))
+                    mainNavController.navigate(AppDestinations.productDetailRoute(it))
                 }
                 AppDestinations.HOME_SEARCH_ROUTE -> SearchScreen()
                 AppDestinations.PROFILE_ROUTE -> ProfileScreen(onSignOut = onSignOut)

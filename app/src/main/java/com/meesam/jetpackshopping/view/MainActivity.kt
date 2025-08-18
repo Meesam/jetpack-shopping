@@ -8,6 +8,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -15,9 +17,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.meesam.jetpackshopping.events.UserProfileEvent
 import com.meesam.jetpackshopping.navigation.AppDestinations
 import com.meesam.jetpackshopping.states.AppState
@@ -26,6 +30,8 @@ import com.meesam.jetpackshopping.view.auth.UserLoginScreen
 import com.meesam.jetpackshopping.view.auth.UserRegistrationScreen
 import com.meesam.jetpackshopping.view.home.AdminHomeScreen
 import com.meesam.jetpackshopping.view.home.HomeScreen
+import com.meesam.jetpackshopping.view.onboarding.OnBoardingScreen
+import com.meesam.jetpackshopping.view.products.ProductDetailScreen
 import com.meesam.jetpackshopping.view.products.ProductScreen
 import com.meesam.jetpackshopping.viewmodel.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,7 +44,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             JetpackShoppingTheme {
-                AppNavigation()
+               Surface(
+                   modifier = Modifier.fillMaxSize(),
+                   color = MaterialTheme.colorScheme.background
+               ) {
+                   AppNavigation()
+               }
+
             }
         }
     }
@@ -61,13 +73,22 @@ fun AppNavigation() {
         val startDestination = if (isUserLoggedIn) {
             AppDestinations.HOME_ROUTE
         } else {
-            AppDestinations.LOGIN_ROUTE
+            AppDestinations.ONBOARDING_ROUTE
         }
 
         NavHost(
             navController = mainNavController,
             startDestination = startDestination,
         ) {
+
+            composable(AppDestinations.ONBOARDING_ROUTE) {
+                OnBoardingScreen(onNavigateToLogin = {
+                    mainNavController.navigate(AppDestinations.LOGIN_ROUTE)
+                }, onNavigateToRegister = {
+                    mainNavController.navigate(AppDestinations.REGISTER_ROUTE)
+                })
+            }
+
             composable(AppDestinations.LOGIN_ROUTE) {
                 UserLoginScreen(
                     onLoginSuccess = {
@@ -111,51 +132,36 @@ fun AppNavigation() {
 
             composable(AppDestinations.PRODUCT_ROUTE) {
                 ProductScreen(
-                    onUserEdit = {userId ->
-                        mainNavController.navigate(AppDestinations.editUserRoute(userId))
+                    onProductClick = {userId ->
+                        mainNavController.navigate(AppDestinations.productDetailRoute(userId))
                     }
                 )
             }
-            /*composable(AppDestinations.ADD_USER_ROUTE) {
-                AddUserScreen(
-                    userId = 0,
-                    onUserAddedSuccessfully = {
-                        mainNavController.navigate(AppDestinations.HOME_ROUTE) {
-                            popUpTo(AppDestinations.HOME_ROUTE) {
-                                inclusive =
-                                    true // This makes userList the new top, removing previous instances
-                            }
-                        }
-                    },
-                    onGoBack = {
-                        mainNavController.popBackStack()
-                    })
-            }*/
-            /*composable(
-                route = AppDestinations.EDIT_USER_ROUTE_PATTERN,
+            composable(
+                route = AppDestinations.PRODUCT_DETAIL_ROUTE_PATTERN,
                 arguments = listOf(
-                    navArgument(AppDestinations.EDIT_USER_ID_KEY) {
-                        type = NavType.LongType
+                    navArgument(AppDestinations.PRODUCT_ID_KEY) {
+                        type = NavType.StringType
                     }
                 )
             ) {backStackEntry ->
-                val userId = backStackEntry.arguments?.getLong(AppDestinations.EDIT_USER_ID_KEY)
-                userId?.let {id->
-                    AddUserScreen(
-                        userId = id,
-                        onUserAddedSuccessfully = {
+                val productId = backStackEntry.arguments?.getString(AppDestinations.PRODUCT_ID_KEY)
+                productId?.let {id->
+                    ProductDetailScreen(
+                        productId = id,
+                        /*onUserAddedSuccessfully = {
                             mainNavController.navigate(AppDestinations.USER_LIST_ROUTE) {
                                 popUpTo(AppDestinations.USER_LIST_ROUTE) {
                                     inclusive =
                                         true // This makes userList the new top, removing previous instances
                                 }
                             }
-                        },
+                        },*/
                         onGoBack = {
                             mainNavController.popBackStack()
                         })
                 }
-            }*/
+            }
         }
     }
 

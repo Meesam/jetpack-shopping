@@ -4,40 +4,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.meesam.jetpackshopping.events.FeedEvents
 import com.meesam.jetpackshopping.model.Category
-import com.meesam.jetpackshopping.model.Product
 import com.meesam.jetpackshopping.repository.CategoryRepository
-import com.meesam.jetpackshopping.repository.ProductRepository
 import com.meesam.jetpackshopping.states.AppState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
-class FeedViewModel @Inject constructor(private val categoryRepository: CategoryRepository, private val productRepository: ProductRepository) :
-    ViewModel() {
+class CategoryViewModel @Inject constructor(private val categoryRepository: CategoryRepository) :
+    ViewModel(){
+
     private var _categories = MutableStateFlow<AppState<List<Category>>>(AppState.Loading)
     val categories: StateFlow<AppState<List<Category>>> = _categories.asStateFlow()
 
-    private var _products = MutableStateFlow<AppState<List<Product>>>(AppState.Loading)
-    val products: StateFlow<AppState<List<Product>>> = _products.asStateFlow()
-
-    private var _productsHistory = MutableStateFlow<AppState<List<Product>>>(AppState.Loading)
-    val productsHistory: StateFlow<AppState<List<Product>>> = _productsHistory.asStateFlow()
-
-    private var _recommendedProducts = MutableStateFlow<AppState<List<Product>>>(AppState.Loading)
-    val recommendedProducts: StateFlow<AppState<List<Product>>> = _recommendedProducts.asStateFlow()
-
-    private var isLoading = MutableStateFlow<Boolean> (false)
-    val _isLoading : StateFlow<Boolean> = isLoading.asStateFlow()
-
     init {
-        //getAllCategory()
-        GetFeedScreenData()
+        getAllCategory()
     }
 
     fun onEvent(events: FeedEvents) {
@@ -72,26 +57,4 @@ class FeedViewModel @Inject constructor(private val categoryRepository: Category
             }
         }
     }
-
-    private fun GetFeedScreenData(){
-        isLoading.value = true
-        viewModelScope.launch {
-            try {
-                val categoriesDeferred = async { categoryRepository.getAllCategory() }
-                val productsDeferred = async { productRepository.getAllProducts() }
-
-                val allCategory = categoriesDeferred.await()
-                val allProduct = productsDeferred.await()
-                _categories.value = AppState.Success(allCategory)
-                _products.value = AppState.Success(allProduct)
-                _productsHistory.value = AppState.Success(allProduct)
-                _recommendedProducts.value = AppState.Success(allProduct)
-                isLoading.value = false
-
-            }catch (ex: Exception){
-                isLoading.value = false
-            }
-        }
-    }
-
 }
