@@ -22,18 +22,30 @@ class ProductsViewModel @Inject constructor(private val productRepository: Produ
     val _products: StateFlow<AppState<List<Product?>>> = products.asStateFlow()
 
     private var _productDetail = MutableStateFlow<AppState<Product?>>(AppState.Idle)
-    val productDetail : StateFlow<AppState<Product?>> = _productDetail.asStateFlow()
+    val productDetail: StateFlow<AppState<Product?>> = _productDetail.asStateFlow()
     private var productId = ""
+
+    private var productCounter = MutableStateFlow<Int>(0)
+    val _productCounter: StateFlow<Int> = productCounter.asStateFlow()
 
     init {
         getAllProduct()
     }
 
-    fun onEvent(event: ProductEvent){
-        when(event){
+    fun onEvent(event: ProductEvent) {
+        when (event) {
             is ProductEvent.LoadProductById -> {
                 productId = event.id
                 getProductById()
+            }
+
+            is ProductEvent.ProductCountDecrement -> {
+                if(productCounter.value > 0){
+                    productCounter.value --
+                }
+            }
+            is ProductEvent.ProductCountIncrement -> {
+                productCounter.value ++
             }
         }
     }
@@ -50,14 +62,14 @@ class ProductsViewModel @Inject constructor(private val productRepository: Produ
         }
     }
 
-    private fun getProductById(){
+    private fun getProductById() {
         _productDetail.value = AppState.Loading
         viewModelScope.launch {
             try {
                 val result = productRepository.getProductById(productId)
                 _productDetail.value = AppState.Success(result)
 
-            }catch (ex: Exception){
+            } catch (ex: Exception) {
                 _productDetail.value = AppState.Error(ex.message)
             }
         }

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -58,6 +60,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.meesam.jetpackshopping.R
 import com.meesam.jetpackshopping.events.ProductEvent
+import com.meesam.jetpackshopping.model.Product
 import com.meesam.jetpackshopping.states.AppState
 import com.meesam.jetpackshopping.ui.theme.JetpackShoppingTheme
 import com.meesam.jetpackshopping.viewmodel.ProductsViewModel
@@ -66,6 +69,7 @@ import com.meesam.jetpackshopping.viewmodel.ProductsViewModel
 fun ProductDetailScreen(productId: String, onGoBack: () -> Unit) {
     val productsViewModel: ProductsViewModel = hiltViewModel()
     val productDetail by productsViewModel.productDetail.collectAsState()
+    val productCounter by productsViewModel._productCounter.collectAsState()
 
     LaunchedEffect(productId) {
         if (productId != "") {
@@ -96,7 +100,20 @@ fun ProductDetailScreen(productId: String, onGoBack: () -> Unit) {
         }
 
         is AppState.Success -> {
-            ProductDetail(productId = productId) {
+            ProductDetail(
+                productDetail = result.data,
+                productCounter = productCounter,
+                onIncreaseCount = {
+                    productsViewModel.onEvent(
+                        ProductEvent.ProductCountIncrement
+                    )
+                },
+                onDecreaseCount = {
+                    productsViewModel.onEvent(
+                        ProductEvent.ProductCountDecrement
+                    )
+                },
+            ) {
                 onGoBack()
             }
         }
@@ -105,7 +122,14 @@ fun ProductDetailScreen(productId: String, onGoBack: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductDetail(modifier: Modifier = Modifier, productId: String, onClick: () -> Unit) {
+fun ProductDetail(
+    modifier: Modifier = Modifier,
+    productDetail: Product?,
+    productCounter: Int,
+    onDecreaseCount: () -> Unit,
+    onIncreaseCount: () -> Unit,
+    onClick: () -> Unit
+) {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -170,12 +194,23 @@ fun ProductDetail(modifier: Modifier = Modifier, productId: String, onClick: () 
                 )
             }
         }
-        ProductProperties()
+        ProductProperties(
+            productCounter = productCounter,
+            onDecreaseCount = onDecreaseCount,
+            onIncreaseCount = onIncreaseCount,
+            productDetail= productDetail
+        )
     }
 }
 
 @Composable
-fun ProductProperties(modifier: Modifier = Modifier) {
+fun ProductProperties(
+    modifier: Modifier = Modifier,
+    productCounter: Int,
+    onIncreaseCount: () -> Unit,
+    onDecreaseCount: () -> Unit,
+    productDetail: Product?
+) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
@@ -186,12 +221,23 @@ fun ProductProperties(modifier: Modifier = Modifier) {
         ) {
             Column {
                 Text(
-                    "Box Bag Linar 1883", style = TextStyle(
+                    productDetail?.title.toString(), style = TextStyle(
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 20.sp,
                         color = MaterialTheme.colorScheme.primary
                     )
                 )
+                Spacer(Modifier.height(12.dp))
+
+                Row {
+                    Text(
+                        "$"+productDetail?.price.toString(), style = TextStyle(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 24.sp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    )
+                }
 
                 Spacer(Modifier.height(12.dp))
 
@@ -211,7 +257,11 @@ fun ProductProperties(modifier: Modifier = Modifier) {
                 }
             }
             Column {
-                ProductCounter()
+                ProductCounter(
+                    productCounter = productCounter,
+                    onIncreaseCount = onIncreaseCount,
+                    onDecreaseCount = onDecreaseCount
+                )
                 Spacer(Modifier.height(10.dp))
                 Text(
                     "Available in stock",
@@ -281,14 +331,31 @@ fun ProductProperties(modifier: Modifier = Modifier) {
         ) {
             Text("Description", style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold))
             Spacer(Modifier.height(10.dp))
-            Text("It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.")
+            Text(productDetail?.description.toString())
+        }
 
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
+                Text("Add To Cart")
+            }
+            Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
+                Text("Buy")
+            }
         }
     }
 }
 
 @Composable
-fun ProductCounter(modifier: Modifier = Modifier) {
+fun ProductCounter(
+    modifier: Modifier = Modifier,
+    productCounter: Int,
+    onIncreaseCount: () -> Unit,
+    onDecreaseCount: () -> Unit,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -308,11 +375,15 @@ fun ProductCounter(modifier: Modifier = Modifier) {
                     ), shape = CircleShape, alpha = 0.5f
                 )
                 .size(30.dp)
-                .clickable { }
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = { onDecreaseCount() })
         ) {
             Icon(
                 Icons.Filled.Remove, contentDescription = "Decrease",
                 tint = MaterialTheme.colorScheme.primary,
+
                 modifier = Modifier
                     .size(25.dp)
                     .graphicsLayer {
@@ -321,7 +392,7 @@ fun ProductCounter(modifier: Modifier = Modifier) {
             )
         }
 
-        Text("3")
+        Text(productCounter.toString())
         Box(
             contentAlignment = Alignment.Center, modifier = Modifier
                 .background(
@@ -330,7 +401,10 @@ fun ProductCounter(modifier: Modifier = Modifier) {
                     ), shape = CircleShape, alpha = 0.5f
                 )
                 .size(30.dp)
-                .clickable { }
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = { onIncreaseCount() })
         ) {
             Icon(
                 Icons.Filled.Add, contentDescription = "Decrease",
@@ -349,7 +423,7 @@ fun ProductCounter(modifier: Modifier = Modifier) {
 @Composable
 fun ProductDetailPreview() {
     JetpackShoppingTheme {
-        ProductCounter()
+        //ProductCounter()
     }
 
 }
