@@ -25,7 +25,7 @@ class ProductsViewModel @Inject constructor(private val productRepository: Produ
     val productDetail: StateFlow<AppState<Product?>> = _productDetail.asStateFlow()
     private var productId = ""
 
-    private var productCounter = MutableStateFlow<Int>(0)
+    private var productCounter = MutableStateFlow<Int>(1)
     val _productCounter: StateFlow<Int> = productCounter.asStateFlow()
 
     init {
@@ -40,7 +40,7 @@ class ProductsViewModel @Inject constructor(private val productRepository: Produ
             }
 
             is ProductEvent.ProductCountDecrement -> {
-                if(productCounter.value > 0){
+                if(productCounter.value > 1){
                     productCounter.value --
                 }
             }

@@ -359,7 +359,7 @@ fun ProductCounter(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
+        modifier = modifier
             .width(100.dp)
             .background(
                 MaterialTheme.colorScheme.secondary,

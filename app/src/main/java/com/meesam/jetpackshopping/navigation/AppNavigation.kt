@@ -16,8 +16,16 @@ object AppDestinations {
 
     const val FEED_ROUTE = "feed"
     const val PROFILE_ROUTE = "profile"
+
+    const val FAVORITE_ROUTE ="favorite_route"
+
+    const val CART_ROUTE = "cart_rote"
+
     const val PRODUCT_ROUTE="product_list"
     const val EDIT_USER_ID_KEY = "id"
+
+    const val ADD_NEW_CARD_ROUTE="add_new_card"
+    const val CHECKOUT_ROUTE = "checkout"
 
     const val PRODUCT_ID_KEY = "id"
     const val PRODUCT_DETAIL_SCREEN_ROUTE = "product_detail"

@@ -2,7 +2,10 @@ package com.meesam.jetpackshopping.view.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,12 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.meesam.jetpackshopping.navigation.AppDestinations
+import com.meesam.jetpackshopping.view.cart.CartScreen
 import com.meesam.jetpackshopping.view.common.AppTopBar
 import com.meesam.jetpackshopping.view.common.BottomNavigationBar
+import com.meesam.jetpackshopping.view.favorite.FavoriteScreen
 import com.meesam.jetpackshopping.view.feed.FeedScreen
 import com.meesam.jetpackshopping.view.products.ProductScreen
 import com.meesam.jetpackshopping.view.profile.ProfileScreen
-import com.meesam.jetpackshopping.view.search.SearchScreen
 
 @Composable
 fun HomeScreen(mainNavController: NavHostController, isAdminLoggedIn: Boolean, onSignOut:()-> Unit) {
@@ -43,7 +47,18 @@ fun HomeScreen(mainNavController: NavHostController, isAdminLoggedIn: Boolean, o
                     // bottomNavController.navigate(route) { launchSingleTop = true; popUpTo(bottomNavController.graph.startDestinationId){ saveState = true } }
                 },
             )
-        }
+        },
+        floatingActionButton = {
+            if(currentBottomTabRoute == AppDestinations.CART_ROUTE){
+                Button(onClick = {
+                    mainNavController.navigate(AppDestinations.CHECKOUT_ROUTE)
+                }) {
+                    Text("Checkout")
+                }
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End
+
     ) { paddingValues ->
         // Content based on selected bottom tab
         Box(modifier = Modifier.padding(paddingValues)) {
@@ -51,9 +66,10 @@ fun HomeScreen(mainNavController: NavHostController, isAdminLoggedIn: Boolean, o
                 AppDestinations.PRODUCT_ROUTE -> ProductScreen() {
                     mainNavController.navigate(AppDestinations.productDetailRoute(it))
                 }
-                AppDestinations.HOME_SEARCH_ROUTE -> SearchScreen()
                 AppDestinations.PROFILE_ROUTE -> ProfileScreen(onSignOut = onSignOut)
                 AppDestinations.FEED_ROUTE -> FeedScreen()
+                AppDestinations.FAVORITE_ROUTE -> FavoriteScreen()
+                AppDestinations.CART_ROUTE -> CartScreen()
             }
         }
     }

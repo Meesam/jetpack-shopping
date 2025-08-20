@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Animation
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
@@ -42,10 +44,11 @@ fun BottomNavigationBar(
             BottomNavigationItem("Home", Icons.Filled.Home, AppDestinations.FEED_ROUTE),
             BottomNavigationItem(
                 "Explore",
-                Icons.Filled.ShoppingCart,
+                Icons.Filled.Animation,
                 AppDestinations.PRODUCT_ROUTE
             ),
-            BottomNavigationItem("Search", Icons.Filled.Search, AppDestinations.HOME_SEARCH_ROUTE),
+            BottomNavigationItem("Favorite", Icons.Filled.Favorite, AppDestinations.FAVORITE_ROUTE),
+            BottomNavigationItem("Cart", Icons.Filled.ShoppingCart, AppDestinations.CART_ROUTE),
             BottomNavigationItem("Profile", Icons.Filled.Person, AppDestinations.PROFILE_ROUTE)
         )
     } else {

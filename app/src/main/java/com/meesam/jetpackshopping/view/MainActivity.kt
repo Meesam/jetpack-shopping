@@ -31,6 +31,8 @@ import com.meesam.jetpackshopping.view.auth.UserRegistrationScreen
 import com.meesam.jetpackshopping.view.home.AdminHomeScreen
 import com.meesam.jetpackshopping.view.home.HomeScreen
 import com.meesam.jetpackshopping.view.onboarding.OnBoardingScreen
+import com.meesam.jetpackshopping.view.payment.AddNewCard
+import com.meesam.jetpackshopping.view.payment.CheckOutScreen
 import com.meesam.jetpackshopping.view.products.ProductDetailScreen
 import com.meesam.jetpackshopping.view.products.ProductScreen
 import com.meesam.jetpackshopping.viewmodel.ProfileViewModel
@@ -126,6 +128,19 @@ fun AppNavigation() {
             composable(AppDestinations.REGISTER_ROUTE) {
                 UserRegistrationScreen(
                     onBackToLogin = { mainNavController.popBackStack() }
+                )
+            }
+
+            composable(AppDestinations.CHECKOUT_ROUTE) {
+                CheckOutScreen(
+                    mainNavController = mainNavController,
+                    onBack = { mainNavController.popBackStack() }
+                )
+            }
+
+            composable(AppDestinations.ADD_NEW_CARD_ROUTE) {
+                AddNewCard(
+                    onBack = { mainNavController.popBackStack() }
                 )
             }
 
