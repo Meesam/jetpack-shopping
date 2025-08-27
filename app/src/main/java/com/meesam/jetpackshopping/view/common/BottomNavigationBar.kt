@@ -3,6 +3,7 @@ package com.meesam.jetpackshopping.view.common
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,19 +18,23 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.meesam.jetpackshopping.navigation.AppDestinations
 import com.meesam.jetpackshopping.navigation.BottomNavigationItem
 
@@ -64,8 +69,19 @@ fun BottomNavigationBar(
         )
     }
     NavigationBar(
-        containerColor = Color(0XFFFFFFFF),
-        contentColor = Color(0XFF31488E),
+        //containerColor = Color(0XFFFFFFFF),
+        //contentColor = Color(0XFF31488E),
+        containerColor = MaterialTheme.colorScheme.secondary,
+        contentColor = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.zIndex(0.5f).graphicsLayer{
+            shape = RoundedCornerShape(
+                topStart = 20.dp,
+                topEnd = 20.dp,
+                bottomStart = 20.dp,
+                bottomEnd = 20.dp
+            )
+            clip = true
+        }
     ) {
         items.forEach { item ->
             val customIndicatorColor = Color(0XFF31488E)
@@ -75,7 +91,7 @@ fun BottomNavigationBar(
                 icon = {
                     Box(
                         modifier = Modifier
-                            .size(56.dp) // Adjust size as needed
+                            .size(56.dp)
                             .then(
                                 if (selected) {
                                     Modifier
@@ -89,7 +105,7 @@ fun BottomNavigationBar(
                         Icon(
                             item.icon,
                             contentDescription = item.title,
-                            tint = if (selected) Color(0XFFFFFFFF) else Color(0XFF31488E) // Your selected/unselected icon color
+                            tint = if (selected) Color(0XFFFFFFFF) else Color(0XFF31488E)
                         )
                     }
                 },
@@ -111,6 +127,7 @@ fun BottomNavigationBar(
                     disabledTextColor = Color(0XFFFFFFFF),
 
                     ),
+                interactionSource = null,
             )
         }
     }
